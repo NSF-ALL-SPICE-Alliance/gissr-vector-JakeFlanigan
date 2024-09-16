@@ -77,6 +77,10 @@ To be able to use the package and its functions in R Studio, we need to load the
 ```{r, message=FALSE}
 library(tidyverse) # put the name of the package/library in the parenthesis 
 ```
+```{r}
+library(tidyverse)
+```
+
 Awesome! Now we can access the many cool things that the tidyverse package can do for us. We'll start using this package and its functions as we go along.
 
 [Check out the tidyverse package documentation](https://www.tidyverse.org/)
@@ -97,12 +101,21 @@ Let's practice creating some variables:
 my_name <- "Victoria DelaCruz" # character strings are stored within quotations
 my_name # run the name of your variable to see the output
 ```
+```{r}
+my_name <- "JakeFlanigan"
+```
 
 2. my_age
 ```{r}
 my_age = 20 # numeric values do not need any quotations
 my_age # run the name of your variable to see the output
 my_age + 5 # how old will you be in 5 years?
+```
+```{r}
+my_age = 40
+```
+```{r}
+my_age + 5
 ```
 
 #### <span style="color: red;">Challenge 1</span>
@@ -197,6 +210,16 @@ Example of this kind of error pictured here:
 <img src="`r here::here('images/library_error.png')`" /> 
 
 In the code chunk below, we use the `read_csv()` function to read in the csv file called *SDR-2023-Data.csv* in our data folder. 
+```{r}
+library(here)
+```
+```{r}
+library(janitor)
+```
+```{r}
+sdr_data <- read_csv(here("data/SDR-2023-Data.csv"))
+```
+
 
   - We use the `here()` function to cut out long file paths. Instead of starting at the home directory on our computer and having to point R towards the csv file we want to read in with *"Users/Victoria/data_science/SDR-2023-Landscape/SDR-2023-Data.csv"*, we can simply tell R to start within the directory of our current R project and find the SDR-2023-Data.csv in our data folder. 
   
@@ -205,10 +228,18 @@ In the code chunk below, we use the `read_csv()` function to read in the csv fil
 sdr_data <- read_csv(here("data/SDR-2023-Data.csv")) # assigning the dataset to a variable so that we can look at/reference it
 # to view the whole dataset you can click on sdr_data in your environment pane at the top right of your screen)
 ```
+```{r}
+sdr_data <- read_csv(here("data/SDR-2023-Data.csv"))
+```
+
 Cleaning names
 ```{r}
 sdr_data <- clean_names(sdr_data) # cleaning column names 
 ```
+```{r}
+sdr_data <- clean_names(sdr_data)
+```
+
 
 Note: In programming, we don't use spaces in names (usually, if you want to use a space between words, you'd use an underscore, slash, or other punctuation). That's why we used the `clean_names` function from the `janitor` package, to clean our column names and replace spaces with underscores.
 
