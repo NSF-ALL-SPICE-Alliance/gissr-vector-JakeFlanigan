@@ -1,0 +1,115 @@
+```{r}
+library("sf")
+```
+```{r}
+library(tidyverse)
+```
+```{r}
+library(rnaturalearth)
+```
+```{r}
+library(rnaturalearthdata)
+```
+```{r}
+library(rnaturalearthhires)
+```
+```{r}
+install.packages("devtools")
+```
+```{r}
+devtools::install_github("ropensci/rnaturalearthhires")
+```
+```{r}
+library(ropensci/rnaturalearthhires)
+```
+
+library(devtools)
+```
+```{r}
+library(rnaturalearthhires)
+
+```
+```{r}
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+```
+
+```
+```{r}
+states <- (ne_states(country = "United States of America"))
+```
+```{r}
+ggplot() +
+    geom_sf(data = world) +
+  geom_sf(data = states) +
+    coord_sf(xlim = c(-125, -100), ylim = c(30, 50), expand = FALSE) +
+    ggtitle("Western United States")+
+    theme_void()
+```
+```{r}
+lakes50 <- ne_download(
+  scale = 50, 
+  type = "lakes", 
+  category = "physical")
+```
+```{r}
+rivers50 <- ne_download(
+  scale = 50,
+  type = "rivers_lake_centerlines",
+  category = "physical",
+  returnclass = "sf"
+)
+```
+```{r}
+ggplot() +
+    geom_sf(data = world) +
+  geom_sf(data = states) +
+  geom_sf(data = lakes50) +
+    geom_sf(data = rivers50) +
+    coord_sf(xlim = c(-125, -100), ylim = c(30, 50), expand = FALSE) +
+    ggtitle("Western United States")+
+    theme_void()
+```
+```{r}
+ggplot() +
+    geom_sf(data = world, fill = "lightgray") +
+  geom_sf(data = states, fill = "white") +
+  geom_sf(data = lakes50, fill = "blue", color = "lightblue") +
+    geom_sf(data = rivers50, color = "lightblue", size = 0.2) +
+    coord_sf(xlim = c(-125, -100), ylim = c(30, 50), expand = FALSE) +
+    ggtitle("Western United States")+
+    theme_void()
+```
+```{r}
+utah <- states %>%
+  filter(name == "Utah")
+```
+```{r}
+ggplot() +
+    geom_sf(data = world, fill = "lightgray") +
+  geom_sf(data = states, fill = "white") +
+  geom_sf(data = lakes50, fill = "blue", color = "lightblue") +
+  geom_sf(data = utah, fill = "antiquewhite1", color = "green")+
+    geom_text(data = states, aes(x = longitude, y = latitude, label = name), size = 3.5, fontface = "bold", nudge_y = states$nudge_y) +
+    geom_sf(data = rivers50, color = "lightblue", size = 0.2) +
+    coord_sf(xlim = c(-125, -100), ylim = c(30, 50), expand = FALSE) +
+    ggtitle("Western United States", subtitle = "with a focus on Utah")+
+    theme_void()
+```
+```{r}
+fourcornersstates <- states%>%
+filter(name == "Utah, Colorado, Arizona, New Mexico")
+```
+```{r}
+ggplot() +
+    geom_sf(data = world, fill = "lightgray") +
+  geom_sf(data = states, fill = "white") +
+  geom_sf(data = lakes50, fill = "blue", color = "lightblue") +
+  geom_sf(data = fourcornersstates, fill = "antiquewhite1", color = "green")+
+    geom_text(data = states, aes(x = longitude, y = latitude, label = name), size = 3.5, fontface = "bold", nudge_y = states$nudge_y) +
+    geom_sf(data = rivers50, color = "lightblue", size = 0.2) +
+    coord_sf(xlim = c(-125, -100), ylim = c(30, 50), expand = FALSE) +
+    ggtitle("Western United States", subtitle = "with a focus on 'Four Corners' states")+
+    theme_void()
+```
+
