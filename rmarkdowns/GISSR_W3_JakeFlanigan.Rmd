@@ -1,0 +1,105 @@
+```{r}
+install.packages("osmdata")
+```
+```{r}
+install.packages("leaflet")
+```
+
+```{r}
+library(tidyverse)
+```
+```{r}
+library(sf)
+```
+```{r}
+library(osmdata)
+``
+```
+```{r}
+library(leaflet)
+```
+```{r}
+available_features(
+  
+)
+```
+```{r}
+available_tags("landuse")
+```
+Challenge 1 above
+Challenge 2 below
+```{r}
+skiresorts <- opq (bbox = c (-125, 30, -100, 50)) %>% 
+    add_osm_feature (key = "landuse", value = "winter_sports", value_exact = FALSE) %>%
+    osmdata_sf ()
+```
+
+```{r}
+bb <- c (-125, 30, 100, 50)
+```
+
+```{r}
+bb <- c(-125, 30, 100, 50)
+```
+
+```{r}
+bb %>%
+  opq()
+```
+```{r}
+skiresorts <- bb %>%
+  opq() %>%
+  add_osm_feature(key = "landuse", value = "winter_sports") %>%
+  osmdata_sf()
+```
+
+```{r}
+skiresorts
+```
+```{r}
+skiresorts$metadata
+```
+
+```{r}
+skiresorts$osm_polygons
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = skiresorts$osm_polygons) +
+  #geom_sf_text(data = skiresorts$osm_polygons) +
+  coord_sf(xlim = c(-125, -100), ylim = c(30, 50), expand = FALSE)
+```
+```{r}
+streets <- opq (bbox = c (-115, 30, -100, 45))%>%
+  add_osm_feature("highway", c("motorway")) %>%
+  osmdata_sf()
+```
+```{r}
+states <- opq(bbox = c (-115, 30, -100, 45))%>%
+  add_osm_feature("boundary=admin_level=2")%>%
+  osmdata_sf()
+```
+```{r}
+ggplot() +
+  geom_sf(data = streets$osm_lines, inherit.aes = FALSE, color = "#ffbe7f", size = .4, alpha = .8) +
+  geom_sf(data = states$osm_lines, inherit.aes = FALSE, color = "black", size = .8, alpha = .5) +
+  geom_sf(data = skiresorts$osm_polygons, inherit.aes = FALSE, colour = "red", fill = "red", alpha = .5, size = 1) +
+  coord_sf(xlim = c(-125, -90), ylim = c(20, 60), expand = TRUE) +
+  geom_sf_text(data = skiresorts$osm_polygons, aes(label = name), size = 2, hjust = 0) +
+  theme_bw() +
+  labs(
+    title = "Ski Resorts of the Western US",
+    x = "Longitude",
+    y = "Latitude"
+  )
+```
+```{r}
+leaflet() %>%
+  addTiles() %>%
+  addPolygons(
+    data = skiresorts$osm_polygons,
+    label = skiresorts$osm_polygons$name
+  ) 
+```
+

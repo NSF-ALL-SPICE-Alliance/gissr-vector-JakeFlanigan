@@ -1,0 +1,120 @@
+```{r}
+install.packages("rinat")
+```
+```{r}
+install.packages("tmap")
+```
+```{r}
+install.packages("plotly")
+```
+```{r}
+library(rinat)
+```
+```{r}
+library(sf)
+```
+```{r}
+library(tidyverse)
+```
+```{r}
+library(tmap)
+```
+```{r}
+library(leaflet)
+```
+```{r}
+library(osmdata)
+```
+
+```{r}
+library(plotly)
+```
+```{r}
+inat_fsquir_obs_df <- get_inat_obs(taxon_id = 1431496, place_id = 1803, quality = "research", geo = TRUE, maxresults = 100)
+```
+```{r}
+save(inat_fsquir_obs_df, file = "SLCounty_FoxSquirrels_inat.Rdata")
+```
+
+```{r}
+inat_obs_sf <-  inat_fsquir_obs_df %>% 
+  select(longitude, latitude, datetime, common_name, scientific_name, image_url, user_login) %>% 
+  st_as_sf(coords=c("longitude", "latitude"), crs=4326)
+```
+
+```{r}
+dim(inat_obs_sf)
+```
+```{r}
+ggplot() +
+  geom_point(data = inat_fsquir_obs_df, aes(x = longitude, y = latitude, color = common_name, text = common_name)) 
+```
+```{r}
+SLCounty_bb <- getbb("Salt Lake County")
+```
+```{r}
+SLCounty_bb
+```
+
+```{r}
+SLCounty_streets <- SLCounty_bb %>%
+  opq() %>%
+  add_osm_feature("highway", c("motorway", "primary")) %>%
+  osmdata_sf()
+```
+```{r}
+SLCounty_rivers <- SLCounty_bb %>%
+  opq() %>%
+  add_osm_feature(key = "natural", value = "water") %>%
+  osmdata_sf()
+```
+```{r}
+p <- ggplot() +
+  geom_sf(data = SLCounty_streets$osm_lines, inherit.aes = FALSE, color = "#ffbe7f", size = .4, alpha = .8) +
+  #geom_sf(data = maui_small_streets$osm_lines, inherit.aes = FALSE, color = "#a6a6a6", size = .2, alpha = .8) +
+  geom_sf(data = SLCounty_rivers$osm_lines, inherit.aes = FALSE, color = "lightblue", size = .8, alpha = .5) +
+  #geom_sf(data = maui_np$osm_polygons, inherit.aes = FALSE, color = "brown", size = .2, alpha = .8) +
+  #geom_sf(data = maui_protected$osm_polygons, inherit.aes = FALSE, color = "green", size = .2, alpha = .8) +
+  geom_point(data = inat_fsquir_obs_df, aes(x = longitude, y = latitude, color = common_name, text = common_name)) +
+  geom_sf_text(size = 1, data = SLCounty_rivers$osm_lines, aes(label = name)) +
+  coord_sf(xlim = c(-112.26, -111.55), ylim = c(40.41, 40.92), expand = TRUE) +
+  ggtitle("Fox Squirrels in Salt Lake County", subtitle = "based on iNaturalist data as of September 2024") +
+  theme_bw() +
+  labs(
+    color="Common Name",x = "Longitude", y = "Latitude") 
+```
+```{r}
+p
+```
+```{r}
+ggplotly(p,
+         tooltip = c("text"))
+```
+```{r}
+inat_obs_popup_sf <- inat_obs_sf %>% 
+  mutate(popup_html = paste0("<p><b>", common_name, "</b><br/>",
+                             "<i>", scientific_name, "</i></p>",
+                             "<p>Observed: ", datetime, "<br/>",
+                             "User: ", user_login, "</p>",
+                             "<p><img src='", image_url, "' style='width:100%;'/></p>")
+  )
+```
+```{r}
+htmltools::p("iNaturalist Observations of Fox Squirrels in Salt Lake County",
+             htmltools::br(),
+             inat_obs_popup_sf$datetime %>% 
+               as.Date() %>% 
+               range(na.rm = TRUE) %>% 
+               paste(collapse = " to "),
+             style = "font-weight:bold; font-size:110%;")
+```
+
+```{r}
+leaflet(inat_obs_sf) %>% 
+  setView(lng = -112, lat = 40.7, zoom = 10)%>%
+  addTiles() %>% 
+  addCircleMarkers(data = inat_obs_popup_sf,
+                   popup = ~popup_html, 
+                   radius = 5)
+```
+

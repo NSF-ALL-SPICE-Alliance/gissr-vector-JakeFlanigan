@@ -1,0 +1,123 @@
+```{r}
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+```
+```{r}
+ggplot(data = world) +
+    geom_sf()
+```
+```{r}
+ggplot(data = world) +
+    geom_sf() +
+    xlab("Longitude") + ylab("Latitude")
+```
+```{r}
+ggplot(data = world) +
+    geom_sf() +
+    ggtitle("World Countries", subtitle = "Created by JakeFlanigan")
+```
+```{r}
+world_without_antarctica <- world %>% 
+  filter(iso_a3 != "ATA")
+```
+```{r}
+world_no_australia <- world %>% 
+  filter(iso_a3 != "AUS")
+```
+```{r}
+ggplot() + 
+  geom_sf(data = world_no_australia)
+```
+
+```{r}
+ggplot() + 
+  geom_sf(data = world_without_antarctica)
+```
+```{r}
+ggplot() + 
+  geom_sf(data = world_without_antarctica) +
+    ggtitle("Countries of the World", subtitle = "without Antarctica")
+```
+```{r}
+ggplot() + 
+  geom_sf(data = world_without_antarctica, 
+          fill = "#669438", color = "#32481B", size = 0.25) +
+  ggtitle("Countries of the World", subtitle = "without Antarctica")
+```
+```{r}
+ggplot() + 
+  geom_sf(data = world_without_antarctica, 
+          fill = "#669438", color = "#32481B", size = 0.25) +
+  ggtitle("Countries of the World", subtitle = "without Antarctica")+
+  theme_void()
+```
+
+```{r}
+ggplot() + 
+  geom_sf(data = world_without_antarctica, 
+          aes(fill = as.factor(mapcolor7)),
+          color = "#401D16", size = 0.25) +
+  scale_fill_brewer(palette = "Set1") +
+  guides(fill = "none") +
+  theme_void()
+```
+
+```{r}
+ggplot() + 
+  geom_sf(data = world_without_antarctica, 
+          aes(fill = as.factor(mapcolor7)),
+          color = "#401D16", size = 0.25) +
+  scale_fill_brewer(palette = "Dark2") +
+  guides(fill = "none") +
+  theme_void()
+```
+```{r}
+ggplot() + 
+  geom_sf(data = world_without_antarctica, 
+          aes(fill = as.factor(mapcolor7)),
+          color = "#401D16", size = 0.25) +
+  scale_fill_brewer(palette = "Pastel1") +
+  guides(fill = "none") +
+  theme_void()
+```
+
+```{r}
+ggplot() + 
+  geom_sf(data = world_without_antarctica, 
+          fill = "#669438", color = "#32481B", size = 0.25) +
+  coord_sf(crs = st_crs("ESRI:54030"))+
+ggtitle("Countries of the World", subtitle = "Robinson Projection")+
+  theme_void()
+
+```
+
+```{r}
+ggplot() + 
+  geom_sf(data = world_without_antarctica, 
+          fill = "#669438", color = "#32481B", size = 0.25) +
+  coord_sf(crs = st_crs("ESRI:54030"))+
+ggtitle("Countries of the World", subtitle = "Robinson Projection")+
+  theme_void()+
+scale_fill_brewer(palette = "Set1") +
+  guides(fill = "none")
+```
+
+```{r}
+ggplot() + 
+  geom_sf(data = world_without_antarctica, 
+          fill = "#669438", color = "#32481B", size = 0.25) +
+  scale_fill_brewer(palette = "Paired") +
+  guides(fill = "none") +
+  coord_sf(crs = st_crs("ESRI:54030"))+
+ggtitle("Countries of the World", subtitle = "Robinson Projection")+
+  theme_void()
+```
+
+```{r}
+ggplot(data = world) +
+  geom_sf(fill = "#669438", color = "#32481B", size = 0.25) +
+    coord_sf(crs = "+proj=ortho +lat_0=40.65 +lon_0=-112 ") +
+  ggtitle("Salt Lake City, UT as the Center of the World", subtitle = "Orthographic Azimuthal")+
+  theme_void()
+```
+
